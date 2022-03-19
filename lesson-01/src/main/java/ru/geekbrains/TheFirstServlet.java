@@ -6,8 +6,9 @@ import java.io.IOException;
 
 /**
  * Класс, реализует интерфейс Servlet
+ * Сайт: myFirstServlet
  */
-@WebServlet(urlPatterns = "/myFirstServelet")    // шаблонб, который указывает какие URL будет обрабатывать сервелет
+@WebServlet(urlPatterns = "/myFirstServlet")    // шаблон, который указывает какие URL будет обрабатывать сервелет
 public class TheFirstServlet implements Servlet {
 
   // связь между сервером приложений и сервелетом
@@ -28,12 +29,15 @@ public class TheFirstServlet implements Servlet {
 
   /**
    * Метод обработки запросов
+   *
    * @param servletRequest  - входящий запрос
    * @param servletResponse - ответ на входящий запрос
    */
   @Override
   public void service(ServletRequest servletRequest, ServletResponse servletResponse) throws ServletException, IOException {
-    servletResponse.getWriter().println("<h2>Hello world!!!</h2>>");
+    // ВАЖНО!!! Если будет несколько запросов, тонужно использовать потокобезопасныек классы!!!
+
+    servletResponse.getWriter().println("<h2>Hello world!!!</h2>");
   }
 
   @Override
