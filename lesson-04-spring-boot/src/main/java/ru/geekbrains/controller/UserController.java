@@ -47,7 +47,8 @@ public class UserController {
         if (binding.hasErrors()) {
             return "user_form";
         }
-        if (!user.getPassword().equals(user.getMatchingPassword())) {
+        if (!user.getPassword().equals(user.getMatchingPassword())) {   // Если поле пароль и второй пароль не одинакова, то создаем ошибку
+            // Выдаем сообщение "Password not match"
             binding.rejectValue("password", "", "Password not match");
             return "user_form";
         }
