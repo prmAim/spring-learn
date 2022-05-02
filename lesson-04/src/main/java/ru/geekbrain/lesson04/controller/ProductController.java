@@ -69,6 +69,17 @@ public class ProductController {
   }
 
   /**
+   * Уровень контроллера. Обрабатываем метод GET URL  .../product/del/{id}
+   */
+  @GetMapping("/del/{id}")
+  public String remove(@PathVariable("id") long id, Model model) {
+    productRepository.delete(id);
+    // перенаправление на URL .../product. Ответ кода: 302. Перенаправление: HTML.Head.Location:/product
+    return "redirect:/product";
+  }
+
+
+  /**
    * Уровень контроллера. Обрабатываем метод POST URL  .../user/new
    * Без ВАЛИДАЦИИ
    */
