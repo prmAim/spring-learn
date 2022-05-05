@@ -1,13 +1,12 @@
 package ru.geekbrain.lesson04.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import ru.geekbrain.lesson04.exception.NotFoundException;
 import ru.geekbrain.lesson04.product.Product;
 import ru.geekbrain.lesson04.product.ProductRepository;
 
@@ -34,6 +33,7 @@ public class ProductController {
   }
 
   /**
+   * Выбор продукта
    * Уровень контроллера. Обрабатываем метод GET URL  .../product/*
    */
   @GetMapping
@@ -54,12 +54,14 @@ public class ProductController {
   @GetMapping("/{id}")
   public String form(@PathVariable("id") long id, Model model) {
     // Модель
-    model.addAttribute("product", productRepository.findById(id));
+    model.addAttribute("product", productRepository.findById(id)
+            .orElseThrow(() -> new NotFoundException("Product not found!")));        // Если такого продукта нет, то усключение
     // Уровень View. Указываем какой шаблон используем: /resources/templates/product_form.html
     return "product_form";
   }
 
   /**
+   * Создание продукта
    * Уровень контроллера. Обрабатываем метод GET URL  .../product/new
    */
   @GetMapping("/new")
@@ -69,9 +71,10 @@ public class ProductController {
   }
 
   /**
-   * Уровень контроллера. Обрабатываем метод GET URL  .../product/del/{id}
+   * Удаление продукта
+   * Уровень контроллера. Обрабатываем метод DELETE URL  .../product/{id}
    */
-  @GetMapping("/del/{id}")
+  @DeleteMapping("/{id}")
   public String remove(@PathVariable("id") long id, Model model) {
     productRepository.delete(id);
     // перенаправление на URL .../product. Ответ кода: 302. Перенаправление: HTML.Head.Location:/product
@@ -102,5 +105,16 @@ public class ProductController {
     productRepository.save(product);
     // перенаправление на URL .../product. Ответ кода: 302. Перенаправление: HTML.Head.Location:/product
     return "redirect:/product";
+  }
+
+  /**
+   * Если в процесе работы контроллера возникнет исключение NotFoundException, то будет перехват
+   * @return
+   */
+  @ResponseStatus(HttpStatus.NOT_FOUND)   // Ошибка 404
+  @ExceptionHandler
+  public String notFoundExceptionHandler(Model model, NotFoundException e) {
+    model.addAttribute("message", e.getMessage());
+    return "not_found";
   }
 }

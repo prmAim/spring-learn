@@ -35,40 +35,7 @@
 
 <div class="container">
     <div class="row py-2">
-        <div class="col-12">
-            <!-- URL на ссылку .../product/new -->
-            <a class="btn btn-primary" th:href="@{/product/new}">Add product</a>
-        </div>
-
-        <div class="col-12">
-            <table class="table table-bordered my-2">
-                <thead>
-                <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Name product</th>
-                    <th scope="col">Cost</th>
-                    <th scope="col">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <!-- Добавить: добавление аттрибута команды th:each. Модель product -->
-                <tr th:each="product : ${product}">
-                    <!-- Список полей должны совпадать со свойствами объекта product  -->
-                    <th scope="row" th:text="${product.id}">1</th>
-                    <td th:text="${product.name}">Jerry</td>
-                    <td th:text="${product.cost}">0.0</td>
-                    <td>
-                        <!-- Добавить: добавление ссылки обработки кнопки th:href="@{/product/{id}, где id = product.id -->
-                        <a class="btn btn-success" th:href="@{/product/{id}(id = ${product.id})}"><i class="fas fa-edit"></i></a>
-                        <!-- Кнопка удаления продукта согласно концепции CRUD -->
-                        <form class="d-inline" th:method="delete" th:action="@{/product/{id}(id = ${product.id})}">
-                            <button class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
-                        </form>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+        <p th:text="${message}">Error message</p>
     </div>
 </div>
 
