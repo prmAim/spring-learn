@@ -7,6 +7,11 @@ import javax.persistence.*;
  */
 @Entity                                                   // обязательное поле
 @Table(name = "products")
+// создание шаблонов-запросов в DB
+@NamedQueries({@NamedQuery(name = "findAllProducts", query = "select p from Product p"),
+               @NamedQuery(name = "countAllProducts", query = "select count(p) from Product p"),
+               @NamedQuery(name = "deleteProduct", query = "delete from Product p where p.id = :id")
+})
 public class Product {
 
   @Id                                                     // обязательное поле
