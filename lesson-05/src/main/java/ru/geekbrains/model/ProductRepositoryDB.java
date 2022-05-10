@@ -146,7 +146,7 @@ public class ProductRepositoryDB implements ProductRepository {
   }
 
 
-  //  Вариант 1. Сохранить и создать продукт
+  //  Вариант 2. Сохранить и создать продукт
   @Override
   public void save(Product product) {
     executeSaveEntityManager(em -> {
