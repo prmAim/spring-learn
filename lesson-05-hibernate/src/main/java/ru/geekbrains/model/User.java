@@ -1,6 +1,8 @@
 package ru.geekbrains.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -24,6 +26,22 @@ public class User {
 
   @Column(nullable = false, length = 1024)
   private String password;
+
+  // Связь сущност. <User> и <Contact>
+  // Виды связей @ManyToOne, @OneToOne, @OneToMany
+  // Важно не забыть про GET и SET
+  @OneToMany(
+          mappedBy = "user",
+          cascade = {CascadeType.REMOVE, CascadeType.PERSIST},
+          orphanRemoval = true
+  )
+  private List<Contact> contactList = new ArrayList<>();
+
+  @ManyToMany(
+          mappedBy = "users",
+          cascade = {CascadeType.REMOVE, CascadeType.PERSIST}
+  )
+  private List<Role> roles = new ArrayList<>();
 
   public User() {
   }
@@ -64,6 +82,14 @@ public class User {
 
   public void setPassword(String password) {
     this.password = password;
+  }
+
+  public List<Contact> getContactList() {
+    return contactList;
+  }
+
+  public void setContactList(List<Contact> contactList) {
+    this.contactList = contactList;
   }
 
   @Override
