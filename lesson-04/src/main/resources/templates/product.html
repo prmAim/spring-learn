@@ -39,7 +39,22 @@
             <!-- URL на ссылку .../product/new -->
             <a class="btn btn-primary" th:href="@{/product/new}">Add product</a>
         </div>
-
+        <!-- Это фильтр -->
+        <div class="col-12 mt-3">
+            <form class="form-inline">
+                <div class="form-group mb-2 mr-2">
+                    <label for="minCost" class="sr-only">Min Cost filter</label>
+                    <input type="text" class="form-control" id="minCost" th:value="${param.minCost}"
+                           name="minCost" placeholder="Min Cost filter">
+                </div>
+                <div class="form-group mb-2 mr-2">
+                    <label for="maxCost" class="sr-only">Max Cost filter</label>
+                    <input type="text" class="form-control" id="maxCost" th:value="${param.maxCost}"
+                           name="maxCost" placeholder="Max Cost filter">
+                </div>
+                <buttom type="submit" class="btn btn-primary mb-2">Apply</buttom>
+            </form>
+        </div>
         <div class="col-12">
             <table class="table table-bordered my-2">
                 <thead>
@@ -51,8 +66,9 @@
                 </tr>
                 </thead>
                 <tbody>
+                <!-- Если данные НЕ пустые = th:unless="${products.isEmpty()}}", то выводим данные-->
                 <!-- Добавить: добавление аттрибута команды th:each. Модель product -->
-                <tr th:each="product : ${product}">
+                <tr th:unless="${products.isEmpty()}" th:each="product : ${products}">
                     <!-- Список полей должны совпадать со свойствами объекта product  -->
                     <th scope="row" th:text="${product.id}">1</th>
                     <td th:text="${product.name}">Jerry</td>
@@ -65,6 +81,10 @@
                             <button class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
                         </form>
                     </td>
+                </tr>
+                <!-- Если данные пустые = th:if="${products.isEmpty()}, то выводим сообщение-->
+                <tr th:if="${products.isEmpty()}">
+                    <td colspan="4">No data</td>
                 </tr>
                 </tbody>
             </table>
