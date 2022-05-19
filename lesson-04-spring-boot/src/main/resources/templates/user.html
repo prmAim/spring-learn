@@ -38,7 +38,17 @@
             <!-- TODO -->
             <a class="btn btn-primary" th:href="@{/user/new}">Add User</a>
         </div>
-
+        <!-- Это фильтр -->
+        <div class="col-12 mt-3">
+            <form class="form-inline">
+                <div class="form-group mb-2 mr-2">
+                    <label for="usernameFilter" class="sr-only">Username filter</label>
+                    <input typr="text" class="form-control" id="usernameFilter" th:value="${param.usernameFilter}"
+                           name="usernameFilter" placeholder="Username filter">
+                </div>
+                <buttom type="submit" class="btn btn-primary mb-2">Apply</buttom>
+            </form>
+        </div>
         <div class="col-12">
             <table class="table table-bordered my-2">
                 <thead>
@@ -50,14 +60,22 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="user : ${users}">
+                <!-- Если данные НЕ пустые = th:unless="${user.isEmptu()}}", то выводим данные-->
+                <tr th:unless="${users.isEmpty()}" th:each="user : ${users}">
                     <th scope="row" th:text="${user.id}">1</th>
                     <td th:text="${user.username}">Alex</td>
                     <td th:text="${user.email}">Alex@mail.com</td>
                     <td>
                         <a class="btn btn-success" th:href="@{/user/{id}(id = ${user.id})}"><i class="fas fa-edit"></i></a>
-                        <a class="btn btn-danger" href="#"><i class="far fa-trash-alt"></i></a>
+                        <!-- Кнопка удаления продукта согласно концепции CRUD -->
+                        <form class="d-inline" th:method="delete" th:action="@{/user/{id}(id = ${user.id})}">
+                            <button class="btn btn-danger"><i class="far fa-trash-alt"></i></button>
+                        </form>
                     </td>
+                </tr>
+                <!-- Если данные пустые = th:if="${user.isEmpty()}, то выводим сообщение-->
+                <tr th:if="${users.isEmpty()}">
+                    <td colspan="4">No data</td>
                 </tr>
                 </tbody>
             </table>

@@ -1,48 +1,84 @@
 package ru.geekbrains.persist;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 
-import javax.annotation.PostConstruct;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 
-@Repository
-public class UserRepository {
+//NEW SCHOOL
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    private final Map<Long, User> userMap = new ConcurrentHashMap<>();
-
-    private final AtomicLong identity = new AtomicLong(0);
-
-    @PostConstruct
-    public void init() {
-        this.save(new User( "User 1"));
-        this.save(new User( "User 2"));
-        this.save(new User( "User 3"));
-        this.save(new User( "User 4"));
-        this.save(new User( "User 5"));
-    }
-
-    public List<User> findAll() {
-        return new ArrayList<>(userMap.values());
-    }
-
-    public User findById(long id) {
-        return userMap.get(id);
-    }
-
-    public User save(User user) {
-        if (user.getId() == null) {
-            user.setId(identity.incrementAndGet());
-        }
-        userMap.put(user.getId(), user);
-        return user;
-    }
-
-    public void delete(long id) {
-        userMap.remove(id);
-    }
+  // То, что было на уроке это баг в Hibernate, который пока не исправлен
+  // Временное решение - указать аннотацию @Param для всех параметров
+  // https://github.com/spring-projects/spring-data-jpa/issues/2472
+  //    @Query("select u " +
+  //            " from User u " +
+  //            "where u.username like :username")
+  List<User> findUserByUsernameLike(@Param("username") String username);
 
 }
+
+// Old SCHOOL
+//import org.springframework.stereotype.Repository;
+//import javax.persistence.EntityManager;
+//import javax.persistence.PersistenceContext;
+//import javax.transaction.Transactional;
+//import java.util.List;
+//import java.util.Optional;
+//
+//// DAO для объекта User
+//@Repository
+//public class UserRepository {
+//
+//  // Inject из Spring Context. @PersistenceContext учитывает создание сессий под каждую операцию с БД.
+//  @PersistenceContext
+//  private EntityManager em;
+//
+////  // Создание транзакции
+////  @Resource
+////  private UserTransaction transaction;
+////
+////  // Без создания транзакции будет ошибка. Так как в объекта [this] транзакция в proxy еще не создана.
+////  @PostConstruct
+////  public void init() {
+////    try {
+////      transaction.begin();
+////      this.save(new User("User 1"));
+////      this.save(new User("User 2"));
+////      this.save(new User("User 3"));
+////      this.save(new User("User 4"));
+////      this.save(new User("User 5"));
+////      transaction.commit();
+////    } catch (Exception e) {
+////      try {
+////        transaction.rollback();
+////      } catch (SystemException ex) {
+////        ex.printStackTrace();
+////      }
+////    }
+////  }
+//
+//  public List<User> findAll() {
+//    return em.createQuery("select u from User u", User.class).getResultList();
+//  }
+//
+//  public Optional<User> findById(long id) {
+//    return Optional.ofNullable(em.find(User.class, id));
+//  }
+//
+//  @Transactional
+//  public User save(User user) {
+//    if (user.getId() == null) {
+//      em.persist(user);
+//    } else {
+//      em.merge(user);
+//    }
+//    return user;
+//  }
+//
+//  @Transactional
+//  public void deleteById(long id) {
+//    em.createQuery("delete from User u where u.id = :id").setParameter("id", id).executeUpdate();
+//  }
+//
+//}
