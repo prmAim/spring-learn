@@ -1,6 +1,8 @@
 package ru.geekbrains.model;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Создание сущности <Продукт>
@@ -25,6 +27,14 @@ public class Product {
   @Column(name = "cost")
   private float cost;
 
+  @ManyToMany
+  @JoinTable(
+          name = "users_products",
+          joinColumns = @JoinColumn(name = "products_id"),
+          inverseJoinColumns = @JoinColumn(name = "users_id")
+  )
+  List<User> users = new ArrayList<>();
+
   // Если нет необходимости в отображении какого-либо поля, необходимо пометить его аннотацией @Transient.
 
   public Product() {                                      // Обязательно пустой конструктор
@@ -41,7 +51,7 @@ public class Product {
     this.cost = cost;
   }
 
-                                                          // Обязательно GET и SET всех полей в DB
+  // Обязательно GET и SET всех полей в DB
   public Long getId() {
     return id;
   }
@@ -64,6 +74,14 @@ public class Product {
 
   public void setCost(float cost) {
     this.cost = cost;
+  }
+
+  public List<User> getUsers() {
+    return users;
+  }
+
+  public void setUsers(List<User> users) {
+    this.users = users;
   }
 
   @Override

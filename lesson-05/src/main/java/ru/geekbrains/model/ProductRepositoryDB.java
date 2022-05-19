@@ -1,22 +1,16 @@
 package ru.geekbrains.model;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
  * Реализация интерфейса. DAO ProductRepository
  */
-public class ProductRepositoryDB implements ProductRepository {
-
-  // потокобезопасный класс
-  private final EntityManagerFactory emFactory;
+public class ProductRepositoryDB extends SessionDBLayer implements ProductRepository {
 
   public ProductRepositoryDB(EntityManagerFactory emFactory) {
-    this.emFactory = emFactory;
+    super(emFactory);
   }
 
 // Вариант 1 Найти всех
@@ -133,19 +127,6 @@ public class ProductRepositoryDB implements ProductRepository {
     return executeForEntityManager(em -> em.createQuery("select count(p) from Product p", Long.class).getSingleResult());
   }
 
-  /**
-   * Общий блок для поиска <продукта> по ID, list<продукта>
-   */
-  private <R> R executeForEntityManager(Function<EntityManager, R> func) {
-    EntityManager em = emFactory.createEntityManager();
-    try {
-      return func.apply(em);      // передаем нашу функцию
-    } finally {
-      em.close();
-    }
-  }
-
-
   //  Вариант 2. Сохранить и создать продукт
   @Override
   public void save(Product product) {
@@ -158,7 +139,6 @@ public class ProductRepositoryDB implements ProductRepository {
     });
   }
 
-
   //  Вариант 2. Удаления продукта
   @Override
   public void delete(long id) {
@@ -167,21 +147,4 @@ public class ProductRepositoryDB implements ProductRepository {
       em.createNamedQuery("deleteProduct").setParameter("id", id).executeUpdate();
     });
   }
-
-  /**
-   * Процедура для сохранения, удаления данных
-   */
-  private void executeSaveEntityManager(Consumer<EntityManager> consumer) {
-    EntityManager em = emFactory.createEntityManager();
-    try {
-      em.getTransaction().begin();
-      consumer.accept(em);      // передаем нашу функцию
-      em.getTransaction().commit();
-    } catch (Exception e) {
-      em.getTransaction().rollback();
-    } finally {
-      em.close();
-    }
-  }
-
 }
