@@ -1,41 +1,32 @@
 package ru.geekbrains.persist;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Pattern;
 
 @Entity
 @Table(name = "users")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    @NotBlank
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String username;
 
-    @Email
-    @NotBlank
-    @Column(name = "email", nullable = false, unique = true)
+    @Column(nullable = false, unique = true)
     private String email;
 
-    @Pattern(regexp = "^(?=.*?[0-9])(?=.*?[A-Z]).{8,}$", message = "Password too simple")
-    @NotBlank
-    @Column(name = "password", nullable = false, length = 512)
+    @Column(nullable = false, length = 512)
     private String password;
-
-    // Данное поле исключаем из БД
-    @Transient
-    private String matchingPassword;
 
     public User() {
     }
 
-    public User(String username) {
+    public User(Long id, String username, String email, String password) {
+        this.id = id;
         this.username = username;
+        this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
@@ -68,13 +59,5 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public String getMatchingPassword() {
-        return matchingPassword;
-    }
-
-    public void setMatchingPassword(String matchingPassword) {
-        this.matchingPassword = matchingPassword;
     }
 }
