@@ -6,6 +6,7 @@ import ru.geekbrains.model.ProductRepository;
 import ru.geekbrains.model.ProductRepositoryDB;
 
 import javax.persistence.EntityManagerFactory;
+import java.math.BigDecimal;
 import java.util.Scanner;
 
 public class MainApp {
@@ -33,7 +34,7 @@ public class MainApp {
           System.out.print("Enter name: ");
           String name = scn.nextLine();
           System.out.print("Enter cost: ");
-          float cost = scn.nextFloat();
+          BigDecimal cost = scn.nextBigDecimal();
           productRepository.save(new Product(name, cost));
           break;
         case "REMOVE PRODUCT":

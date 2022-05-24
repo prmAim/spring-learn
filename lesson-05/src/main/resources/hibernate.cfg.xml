@@ -18,5 +18,6 @@
 
         <mapping class="ru.geekbrains.model.Product"/>
         <mapping class="ru.geekbrains.model.User"/>
+        <mapping class="ru.geekbrains.model.LineItem"/>
     </session-factory>
 </hibernate-configuration>

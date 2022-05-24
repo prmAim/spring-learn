@@ -30,13 +30,8 @@ public class User {
   // Связь сущност. <User> и <Contact>
   // Виды связей @ManyToOne, @OneToOne, @OneToMany
   // Важно не забыть про GET и SET
-  @ManyToMany
-  @JoinTable(
-          name = "users_products",
-          joinColumns = @JoinColumn(name = "users_id"),
-          inverseJoinColumns = @JoinColumn(name = "products_id")
-  )
-  private List<Product> products = new ArrayList<>();
+  @OneToMany(mappedBy = "product")
+  private List<LineItem> lineItems;
 
   public User() {
   }
@@ -79,12 +74,12 @@ public class User {
     this.password = password;
   }
 
-  public List<Product> getProducts() {
-    return products;
+  public List<LineItem> getLineItems() {
+    return lineItems;
   }
 
-  public void setProducts(List<Product> products) {
-    this.products = products;
+  public void setLineItems(List<LineItem> lineItems) {
+    this.lineItems = lineItems;
   }
 
   @Override

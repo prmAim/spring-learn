@@ -10,8 +10,8 @@ import ru.geekbrain.lesson04.exception.NotFoundException;
 import ru.geekbrain.lesson04.product.Product;
 import ru.geekbrain.lesson04.product.ProductRepositoryDB;
 
-import javax.naming.Binding;
 import javax.validation.Valid;
+import java.math.BigDecimal;
 import java.util.Optional;
 
 /**
@@ -68,7 +68,7 @@ public class ProductController {
    */
   @GetMapping("/new")
   public String form(Model model) {
-    model.addAttribute("product", new Product(null, "", 0.0f));
+    model.addAttribute("product", new Product(null, "", new BigDecimal("0.0")));
     return "product_form";
   }
 

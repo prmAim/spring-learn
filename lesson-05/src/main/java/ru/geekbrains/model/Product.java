@@ -1,6 +1,7 @@
 package ru.geekbrains.model;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,27 +26,22 @@ public class Product {
   private String name;
 
   @Column(name = "cost")
-  private float cost;
+  private BigDecimal cost;
 
-  @ManyToMany
-  @JoinTable(
-          name = "users_products",
-          joinColumns = @JoinColumn(name = "products_id"),
-          inverseJoinColumns = @JoinColumn(name = "users_id")
-  )
-  List<User> users = new ArrayList<>();
+  @OneToMany(mappedBy = "product")
+  List<LineItem> lineItems;
 
   // Если нет необходимости в отображении какого-либо поля, необходимо пометить его аннотацией @Transient.
 
   public Product() {                                      // Обязательно пустой конструктор
   }
 
-  public Product(String name, float cost) {
+  public Product(String name, BigDecimal  cost) {
     this.name = name;
     this.cost = cost;
   }
 
-  public Product(Long id, String name, float cost) {
+  public Product(Long id, String name, BigDecimal cost) {
     this.id = id;
     this.name = name;
     this.cost = cost;
@@ -68,20 +64,20 @@ public class Product {
     this.name = name;
   }
 
-  public float getCost() {
+  public BigDecimal getCost() {
     return cost;
   }
 
-  public void setCost(float cost) {
+  public void setCost(BigDecimal cost) {
     this.cost = cost;
   }
 
-  public List<User> getUsers() {
-    return users;
+  public List<LineItem> getLineItems() {
+    return lineItems;
   }
 
-  public void setUsers(List<User> users) {
-    this.users = users;
+  public void setLineItems(List<LineItem> lineItems) {
+    this.lineItems = lineItems;
   }
 
   @Override

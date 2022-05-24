@@ -46,6 +46,12 @@
                     <input typr="text" class="form-control" id="usernameFilter" th:value="${param.usernameFilter}"
                            name="usernameFilter" placeholder="Username filter">
                 </div>
+                <div class="form-group mb-2 mr-2">
+                    <label for="emailFilter" class="sr-only">Email filter</label>
+                    <input type="text" class="form-control" id="emailFilter" th:value="${param.emailFilter}"
+                           name="emailFilter" placeholder="Email filter">
+                </div>
+
                 <buttom type="submit" class="btn btn-primary mb-2">Apply</buttom>
             </form>
         </div>

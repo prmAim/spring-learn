@@ -1,6 +1,7 @@
 package ru.geekbrains.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.exception.NotFoundException;
 import ru.geekbrains.persist.User;
 import ru.geekbrains.persist.UserRepository;
+import ru.geekbrains.persist.UserSpecification;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -25,12 +27,23 @@ public class UserController {
   }
 
   @GetMapping
-  public String listPage(@RequestParam Optional<String> usernameFilter, Model model) {
-    if (usernameFilter.isEmpty() || usernameFilter.get().isBlank()) {
-      model.addAttribute("users", userRepository.findAll());
-    } else {
-      model.addAttribute("users", userRepository.findUserByUsernameLike("%" + usernameFilter.get() + "%"));
+  public String listPage(@RequestParam Optional<String> usernameFilter,
+                         @RequestParam Optional<String> emailFilter,
+                         Model model) {
+//    Вариант фильтра 1
+//    String usernameFilterValue = usernameFilter.filter(s -> !s.isBlank()).orElse(null);
+//    String emailFilterValue = emailFilter.filter(s -> !s.isBlank()).orElse(null);
+//    model.addAttribute("users", userRepository.findUserByFilter(usernameFilterValue, emailFilterValue));
+
+//    Вариант фильтра 2 (составной запрос в БД [лучше + гибкость подхода]) через класс UserSpecification
+    Specification<User> spec = Specification.where(null);
+    if (emailFilter.isPresent() && !emailFilter.get().isBlank()){
+      spec = spec.and(UserSpecification.emailContaining(emailFilter.get()));
     }
+    if (usernameFilter.isPresent() && !usernameFilter.get().isBlank()){
+      spec = spec.and(UserSpecification.usernameContaining(usernameFilter.get()));
+    }
+    model.addAttribute("users", userRepository.findAll(spec));
     return "user";
   }
 

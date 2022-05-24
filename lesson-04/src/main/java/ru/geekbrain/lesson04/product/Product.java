@@ -5,7 +5,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
-import java.util.List;
+import java.math.BigDecimal;
 
 /**
  * Создание сущности <Продукт>
@@ -38,7 +38,7 @@ public class Product {
   @Max(value = 100000, message = "Max cost is 100 000")
   @Min(value = 0, message = "Min cost is 0")
   @Column(name = "cost")
-  private float cost;
+  private BigDecimal cost;
 //
 //  @ManyToMany
 //  @JoinTable(
@@ -53,12 +53,12 @@ public class Product {
   public Product() {                                      // Обязательно пустой конструктор
   }
 
-  public Product(String name, float cost) {
+  public Product(String name, BigDecimal cost) {
     this.name = name;
     this.cost = cost;
   }
 
-  public Product(Long id, String name, float cost) {
+  public Product(Long id, String name, BigDecimal cost) {
     this.id = id;
     this.name = name;
     this.cost = cost;
@@ -81,11 +81,11 @@ public class Product {
     this.name = name;
   }
 
-  public float getCost() {
+  public BigDecimal getCost() {
     return cost;
   }
 
-  public void setCost(float cost) {
+  public void setCost(BigDecimal cost) {
     this.cost = cost;
   }
 
