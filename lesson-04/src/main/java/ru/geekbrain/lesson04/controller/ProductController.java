@@ -8,10 +8,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrain.lesson04.exception.NotFoundException;
 import ru.geekbrain.lesson04.product.Product;
-import ru.geekbrain.lesson04.product.ProductRepository;
+import ru.geekbrain.lesson04.product.ProductRepositoryDB;
 
-import javax.naming.Binding;
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * Создание контроллера обработки URL .../user через DispatcherServlet
@@ -22,13 +23,13 @@ import javax.validation.Valid;
 @Controller
 public class ProductController {
 
-  private final ProductRepository productRepository;
+  private final ProductRepositoryDB productRepository;
 
   /**
    * @Autowired - зависимость. создание Bean[объект] ProductRepository, который управляется spring
    */
   @Autowired
-  public ProductController(ProductRepository productRepository) {
+  public ProductController(ProductRepositoryDB productRepository) {
     this.productRepository = productRepository;
   }
 
@@ -37,9 +38,10 @@ public class ProductController {
    * Уровень контроллера. Обрабатываем метод GET URL  .../product/*
    */
   @GetMapping
-  public String listPage(Model model) {
+  public String listPage(@RequestParam Optional<BigDecimal> minCost, @RequestParam Optional<BigDecimal> maxCost, Model model) {
     // Модель
-    model.addAttribute("product", productRepository.findAll());
+    model.addAttribute("products", productRepository.findProductByCostBetween(minCost.isPresent() ? minCost.get() : null,
+            maxCost.isPresent() ? maxCost.get() : null));
     // Уровень View. Указываем какой шаблон используем: /resources/templates/product.html
     // /resources/templates/ - из настроек, которые указаны в maven spring-boot-dependecies
     return "product";
@@ -66,7 +68,7 @@ public class ProductController {
    */
   @GetMapping("/new")
   public String form(Model model) {
-    model.addAttribute("product", new Product(null, "", 0.0f));
+    model.addAttribute("product", new Product(null, "", new BigDecimal("0.0")));
     return "product_form";
   }
 
@@ -76,7 +78,7 @@ public class ProductController {
    */
   @DeleteMapping("/{id}")
   public String remove(@PathVariable("id") long id, Model model) {
-    productRepository.delete(id);
+    productRepository.deleteById(id);
     // перенаправление на URL .../product. Ответ кода: 302. Перенаправление: HTML.Head.Location:/product
     return "redirect:/product";
   }
