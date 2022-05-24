@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -20,5 +21,5 @@ public interface ProductRepositoryDB extends JpaRepository<Product, Long> {
           "                     then :maxCost" +
           "                     else u.cost" +
           "                end")
-  List<Product> findProductByCostBetween(@Param("minCost") Float minCost, @Param("maxCost") Float maxCost);
+  List<Product> findProductByCostBetween(@Param("minCost") BigDecimal minCost, @Param("maxCost") BigDecimal maxCost);
 }

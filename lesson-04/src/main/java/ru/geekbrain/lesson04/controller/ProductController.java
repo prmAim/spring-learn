@@ -38,7 +38,7 @@ public class ProductController {
    * Уровень контроллера. Обрабатываем метод GET URL  .../product/*
    */
   @GetMapping
-  public String listPage(@RequestParam Optional<Float> minCost, @RequestParam Optional<Float> maxCost, Model model) {
+  public String listPage(@RequestParam Optional<BigDecimal> minCost, @RequestParam Optional<BigDecimal> maxCost, Model model) {
     // Модель
     model.addAttribute("products", productRepository.findProductByCostBetween(minCost.isPresent() ? minCost.get() : null,
             maxCost.isPresent() ? maxCost.get() : null));
