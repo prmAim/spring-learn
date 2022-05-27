@@ -6,12 +6,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.geekbrain.lesson04.dto.ProductDto;
 import ru.geekbrain.lesson04.exception.NotFoundException;
-import ru.geekbrain.lesson04.product.Product;
-import ru.geekbrain.lesson04.product.ProductRepository;
+import ru.geekbrain.lesson04.service.ProductService;
 
-import javax.naming.Binding;
 import javax.validation.Valid;
+import java.math.BigDecimal;
+import java.util.Optional;
 
 /**
  * Создание контроллера обработки URL .../user через DispatcherServlet
@@ -22,14 +23,14 @@ import javax.validation.Valid;
 @Controller
 public class ProductController {
 
-  private final ProductRepository productRepository;
+  private final ProductService productService;
 
   /**
    * @Autowired - зависимость. создание Bean[объект] ProductRepository, который управляется spring
    */
   @Autowired
-  public ProductController(ProductRepository productRepository) {
-    this.productRepository = productRepository;
+  public ProductController(ProductService productService) {
+    this.productService = productService;
   }
 
   /**
@@ -37,9 +38,25 @@ public class ProductController {
    * Уровень контроллера. Обрабатываем метод GET URL  .../product/*
    */
   @GetMapping
-  public String listPage(Model model) {
+  public String listPage(
+          @RequestParam Optional<BigDecimal> minCost,
+          @RequestParam Optional<BigDecimal> maxCost,
+          // пагинация page = № страницы, size = размер страницы
+          @RequestParam Optional<Integer> page,
+          @RequestParam Optional<Integer> size,
+          @RequestParam Optional<String> sortCol,
+          Model model) {
+    // Расчет идет с 0, а пользователь видит с № 1
+    Integer pageValue = page.orElse(1) - 1;
+    Integer sizeValue = size.orElse(3);
+    String sortColValue = sortCol.filter(s -> !s.isBlank()).orElse(null);
     // Модель
-    model.addAttribute("product", productRepository.findAll());
+    model.addAttribute("products", productService.findProductsByFilter(
+            minCost.isPresent() ? minCost.get() : null,
+            maxCost.isPresent() ? maxCost.get() : null,
+            pageValue,
+            sizeValue,
+            sortColValue));
     // Уровень View. Указываем какой шаблон используем: /resources/templates/product.html
     // /resources/templates/ - из настроек, которые указаны в maven spring-boot-dependecies
     return "product";
@@ -54,7 +71,7 @@ public class ProductController {
   @GetMapping("/{id}")
   public String form(@PathVariable("id") long id, Model model) {
     // Модель
-    model.addAttribute("product", productRepository.findById(id)
+    model.addAttribute("product", productService.findById(id)
             .orElseThrow(() -> new NotFoundException("Product not found!")));        // Если такого продукта нет, то усключение
     // Уровень View. Указываем какой шаблон используем: /resources/templates/product_form.html
     return "product_form";
@@ -66,7 +83,7 @@ public class ProductController {
    */
   @GetMapping("/new")
   public String form(Model model) {
-    model.addAttribute("product", new Product(null, "", 0.0f));
+    model.addAttribute("product", new ProductDto());
     return "product_form";
   }
 
@@ -76,7 +93,7 @@ public class ProductController {
    */
   @DeleteMapping("/{id}")
   public String remove(@PathVariable("id") long id, Model model) {
-    productRepository.delete(id);
+    productService.deleteById(id);
     // перенаправление на URL .../product. Ответ кода: 302. Перенаправление: HTML.Head.Location:/product
     return "redirect:/product";
   }
@@ -95,20 +112,23 @@ public class ProductController {
 
   /**
    * Уровень контроллера. Обрабатываем метод POST URL  .../user/new    * ВАЛИДАЦИя
+   *
    * @Valid - объект валидации. BindingResult binding - проверка. Валидация на заполнение полей.
+   * @ModelAttribute("product") - так как мы указываем класс ProductDto, а нам нужно преобразовать его в product
    */
   @PostMapping
-  public String save(@Valid Product product, BindingResult binding) {
-    if (binding.hasErrors()){     // если есть ошибки, то остаемся на форме product_form
+  public String save(@Valid @ModelAttribute("product") ProductDto product, BindingResult binding) {
+    if (binding.hasErrors()) {     // если есть ошибки, то остаемся на форме product_form
       return "product_form";
     }
-    productRepository.save(product);
+    productService.save(product);
     // перенаправление на URL .../product. Ответ кода: 302. Перенаправление: HTML.Head.Location:/product
     return "redirect:/product";
   }
 
   /**
    * Если в процесе работы контроллера возникнет исключение NotFoundException, то будет перехват
+   *
    * @return
    */
   @ResponseStatus(HttpStatus.NOT_FOUND)   // Ошибка 404

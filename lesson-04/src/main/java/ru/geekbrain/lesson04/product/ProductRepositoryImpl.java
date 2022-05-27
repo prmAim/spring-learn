@@ -3,6 +3,7 @@ package ru.geekbrain.lesson04.product;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +26,11 @@ public class ProductRepositoryImpl implements ProductRepository {
      */
     @PostConstruct
     public void init() {
-        this.save(new Product(null, "Bananes", 10.20f));
-        this.save(new Product(null, "Cherry", 20.50f));
-        this.save(new Product(null, "Oranges", 40.60f));
-        this.save(new Product(null, "Apple", 40.60f));
-        this.save(new Product(null, "Tomato", 40.60f));
+        this.save(new Product(null, "Bananes", new BigDecimal("10.20")));
+        this.save(new Product(null, "Cherry", new BigDecimal("20.50")));
+        this.save(new Product(null, "Oranges", new BigDecimal("40.60")));
+        this.save(new Product(null, "Apple", new BigDecimal("40.60")));
+        this.save(new Product(null, "Tomato", new BigDecimal("40.60")));
     }
 
     @Override
