@@ -39,9 +39,6 @@ public class ProductServiceImpl implements ProductService {
     if (maxCost != null) {
       spec = spec.and(ProductSpecifications.maxCostContaining(maxCost));
     }
-    if (sortCol == null) {
-      sortCol = "id";
-    }
     // PageRequest.of(page, size, Sort.by("id"))) = реализация пагинации page = номер страницы, size = объем страницы
     // Sort.by - сортировка
     return productRepository.findAll(spec, PageRequest.of(page, size, Sort.by(sortCol)))

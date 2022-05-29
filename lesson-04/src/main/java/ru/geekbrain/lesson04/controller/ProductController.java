@@ -49,7 +49,7 @@ public class ProductController {
     // Расчет идет с 0, а пользователь видит с № 1
     Integer pageValue = page.orElse(1) - 1;
     Integer sizeValue = size.orElse(3);
-    String sortColValue = sortCol.filter(s -> !s.isBlank()).orElse(null);
+    String sortColValue = sortCol.filter(s -> !s.isBlank()).orElse("id");
     // Модель
     model.addAttribute("products", productService.findProductsByFilter(
             minCost.isPresent() ? minCost.get() : null,
