@@ -30,7 +30,8 @@ public class UserServiceImpl implements UserService {
      * Уже содержит преобразование в лист коллекции
      */
     @Override
-    public Page<UserDto> findUsersByFilter(String usernameFilter, String emailFilter, Integer page, Integer size) {
+    public Page<UserDto> findUsersByFilter(String usernameFilter, String emailFilter,
+                                           Integer page, Integer size, String sortField) {
         Specification<User> spec = Specification.where(null);
         if (usernameFilter != null) {
             spec = spec.and(UserSpecifications.usernameContaining(usernameFilter));

@@ -30,6 +30,7 @@ public class UserController {
                            // пагинация page = № страницы, size = размер страницы
                            @RequestParam Optional<Integer> page,
                            @RequestParam Optional<Integer> size,
+                           @RequestParam Optional<String> sortField,
                            Model model) {
         String usernameFilterValue = usernameFilter
                 .filter(s -> !s.isBlank())
@@ -40,11 +41,16 @@ public class UserController {
         // Расчет идет с 0, а пользователь видит с № 1
         Integer pageValue = page.orElse(1) - 1;
         Integer sizeValue = size.orElse(3);
+        // Сортировка
+        String sortFieldValue = sortField
+                .filter(s -> !s.isBlank())
+                .orElse("id");
         model.addAttribute("users", userService.findUsersByFilter(
                 usernameFilterValue,
                 emailFilterValue,
                 pageValue,
-                sizeValue));
+                sizeValue,
+                sortFieldValue));
         return "user";
     }
 

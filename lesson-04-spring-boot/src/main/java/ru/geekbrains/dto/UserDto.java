@@ -1,5 +1,7 @@
 package ru.geekbrains.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
@@ -22,6 +24,7 @@ public class UserDto {
     @NotBlank
     private String password;
 
+    @JsonIgnore
     private String matchingPassword;
 
     public UserDto() {
