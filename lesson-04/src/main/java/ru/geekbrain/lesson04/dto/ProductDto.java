@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 
 /**
  * Разделение уровней сервиса [валидация front] и уровня сущности DB из-за принципа единства отвественности
+ * Взаимодействие через WEB-форму
  */
 public class ProductDto {
 
@@ -22,7 +23,6 @@ public class ProductDto {
 
     @Max(value = 100000, message = "Max cost is 100 000")
     @Min(value = 0, message = "Min cost is 0")
-    @NotBlank
     private BigDecimal cost;
 
 //    @Pattern(regexp = "^(?=.*?[0-9])(?=.*?[A-Z]).{8,}$", message = "Password too simple")

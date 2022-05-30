@@ -2,36 +2,13 @@
 <!-- Добавить: xmlns:th="http://www.thymeleaf.org" -->
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-<head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
-    <title>EShop application</title>
-</head>
+<!-- th:fragment="fragments/head.html = фаил фрагмента. head = название блока фрагмента-->
+<head th:replace="fragments/head.html :: head"></head>
 
 <body>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">EShop</a>
-
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-                <a class="nav-link" href="#">List</a>
-            </li>
-        </ul>
-    </div>
-</nav>
+<!-- th:fragment="fragments/head.html = фаил фрагмента. navigation = название блока фрагмента-->
+<nav th:replace="fragments/head.html :: navigation"></nav>
 
 <div class="container">
     <div class="row py-2">
@@ -62,21 +39,10 @@
                 <thead>
                 <tr>
                     <!-- Сортировка -->
-                    <th scope="col">ID
-                        <a th:href="@{/product(sortCol=${'id'}, page=${param.page}, size=${param.size}, minCost=${param.minCost}, maxCost=${param.maxCost})}">
-                            <i class="fa fa-sort-down"></i>
-                        </a>
-                    </th>
-                    <th scope="col">Name product
-                        <a th:href="@{/product(sortCol=${'name'}, page=${param.page}, size=${param.size}, minCost=${param.minCost}, maxCost=${param.maxCost})}">
-                            <i class="fa fa-sort-down"></i>
-                        </a>
-                    </th>
-                    <th scope="col">Cost
-                        <a th:href="@{/product(sortCol=${'cost'}, page=${param.page}, size=${param.size}, minCost=${param.minCost}, maxCost=${param.maxCost})}">
-                            <i class="fa fa-sort-down"></i>
-                        </a>
-                    </th>
+                    <!-- рагмент в fragments, который имеет название блока = sort_header.html -->
+                    <th th:replace="fragments/sort_header.html :: sort_header ('ID', 'id')"></th>
+                    <th th:replace="fragments/sort_header.html :: sort_header ('Name product', 'name')"></th>
+                    <th th:replace="fragments/sort_header.html :: sort_header ('Cost', 'cost')"></th>
                     <th scope="col">Actions</th>
                 </tr>
                 </thead>
@@ -140,16 +106,9 @@
     </div>
 </div>
 
-<!-- Optional JavaScript -->
-<!-- jQuery first, then Popper.js, then Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
-        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-        crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-        crossorigin="anonymous"></script>
+
+<!-- th:fragment="fragments/footer.html = фаил фрагмента. scripts = название блока фрагмента-->
+<th:block th:replace="fragments/footer.html :: scripts"></th:block>
+
 </body>
 </html>
