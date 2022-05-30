@@ -74,10 +74,11 @@ public class ProductResource {
   }
 
   @DeleteMapping("/{id}")
-  public void remove(@PathVariable("id") long id) {
+  public int remove(@PathVariable("id") long id) {
     productService.findById(id)
             .orElseThrow(() -> new NotFoundException("Product not found!"));
     productService.deleteById(id);
+    return HttpStatus.OK.value();
   }
 
   /**
