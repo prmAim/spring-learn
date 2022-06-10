@@ -1,0 +1,28 @@
+GET http://localhost:8081/mvc-app/rest/v1/product/all
+
+###
+
+GET http://localhost:8081/mvc-app/rest/v1/product/7/id
+
+###
+
+POST http://localhost:8081/mvc-app/rest/v1/product
+Content-Type: application/json
+
+    {
+      "name": "Orange",
+      "cost": 90.0
+    }
+###
+
+PUT http://localhost:8081/mvc-app/rest/v1/product
+Content-Type: application/json
+
+{
+  "id": 9,
+  "name": "Orange",
+  "cost": 190.0
+}
+
+###
+DELETE http://localhost:8081/mvc-app/rest/v1/product/9
