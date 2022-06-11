@@ -15,6 +15,7 @@
         <module>lesson-04</module>
         <module>lesson-05-hibernate</module>
         <module>lesson-05</module>
+        <module>consol-spring</module>
     </modules>
     <packaging>pom</packaging>
 
