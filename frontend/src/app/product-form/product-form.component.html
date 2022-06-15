@@ -1,0 +1,23 @@
+<div class="row py-2">
+  <div class="col-12">
+    <!-- Сообщение об ошибке    -->
+    <div *ngIf="isError" class="alert alert-danger" role="alert">
+      {{errorMessage}}
+    </div>
+    <!-- Вызов метода    -->
+    <form (ngSubmit)="save()">
+      <div class="form-group">
+        <label>Name</label>
+        <!--  [(ngModel)] - двойное связывание -->
+        <input [(ngModel)]="product.name" type="text" class="form-control" id="name" name="name"
+               placeholder="Enter name product">
+      </div>
+      <div class="form-group">
+        <label>Cost</label>
+        <input [(ngModel)]="product.cost" type="number" class="form-control" id="cost" name="cost"
+               placeholder="Enter cost product">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+</div>
