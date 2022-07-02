@@ -3,6 +3,7 @@ package ru.geekbrains.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.dto.UserDto;
 import ru.geekbrains.exception.NotFoundException;
@@ -11,6 +12,7 @@ import ru.geekbrains.service.UserService;
 import java.sql.SQLException;
 import java.util.Optional;
 
+// http://localhost:8080/mvc-app/swager-ui/index.html
 @RequestMapping("/rest/v1/user")
 @RestController
 public class UserResource {
@@ -53,6 +55,7 @@ public class UserResource {
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
+    @Secured("ROLE_SUPERADMIN")
     @PostMapping
     public UserDto create(@RequestBody UserDto user) {
         if (user.getId() != null) {
@@ -61,6 +64,7 @@ public class UserResource {
         return userService.save(user);
     }
 
+    @Secured("ROLE_SUPERADMIN")
     @PutMapping
     public UserDto update(@RequestBody UserDto user) {
         if (user.getId() == null) {

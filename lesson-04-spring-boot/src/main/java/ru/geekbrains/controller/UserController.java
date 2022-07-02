@@ -2,12 +2,18 @@ package ru.geekbrains.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrains.dto.UserDto;
 import ru.geekbrains.exception.NotFoundException;
+import ru.geekbrains.persist.RoleRepository;
 import ru.geekbrains.service.UserService;
 
 import javax.validation.Valid;
@@ -18,10 +24,12 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleRepository roleRepository) {
         this.userService = userService;
+        this.roleRepository = roleRepository;
     }
 
     @GetMapping
@@ -31,7 +39,15 @@ public class UserController {
                            @RequestParam Optional<Integer> page,
                            @RequestParam Optional<Integer> size,
                            @RequestParam Optional<String> sortField,
+                           Authentication auth,                         // данные авторизации о пользователем
                            Model model) {
+        // Данные о пользователи для реазизации с ААА
+        // 1 вариант Authentication auth
+        auth.getName();
+        // 2 варинат
+        Authentication aut = SecurityContextHolder.getContext().getAuthentication();
+        auth.getName();
+
         String usernameFilterValue = usernameFilter
                 .filter(s -> !s.isBlank())
                 .orElse(null);
@@ -56,25 +72,32 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String form(@PathVariable long id, Model model) {
+        model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
         // Уровень View. Указываем какой шаблон используем: /resources/templates/product_form.html
         return "user_form";
     }
 
+    // Если пользователь авторизован, то доступен данный метод
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/new")
     public String form(Model model) {
+        model.addAttribute("roles", roleRepository.findAll());
         model.addAttribute("user", new UserDto());
         return "user_form";
     }
 
+    @Secured("ROLE_SUPERADMIN")
     @PostMapping
-    public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding) {
+    public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding, Model model) {
         if (binding.hasErrors()) {
+            model.addAttribute("roles", roleRepository.findAll());
             return "user_form";
         }
         if (!user.getPassword().equals(user.getMatchingPassword())) {   // Если поле пароль и второй пароль не одинакова, то создаем ошибку
             // Выдаем сообщение "Password not match"
+            model.addAttribute("roles", roleRepository.findAll());
             binding.rejectValue("password", "", "Password not match");
             return "user_form";
         }
@@ -86,6 +109,7 @@ public class UserController {
      * Удаление продукта
      * Уровень контроллера. Обрабатываем метод DELETE URL  .../product/{id}
      */
+    @Secured("ROLE_SUPERADMIN")
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id) {
         userService.deleteById(id);

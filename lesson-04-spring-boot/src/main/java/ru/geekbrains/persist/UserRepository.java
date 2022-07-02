@@ -12,17 +12,21 @@ import java.util.Optional;
 // Создание фильтра через JpaSpecificationExecutor<User> с помощью  criteriaBuilder
 public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificationExecutor<User> {
 
-    // То, что было на уроке это баг в Hibernate, который пока не исправлен
-    // Временное решение - указать аннотацию @Param для всех параметров
-    // https://github.com/spring-projects/spring-data-jpa/issues/2472
-    @Query("select u " +
-            " from User u " +
-            "where (u.username like concat('%', :username, '%') or :username is null) and " +
-            "      (u.email like concat('%', :email, '%') or :email is null)")
-    List<User> findUserByFilter(@Param("username") String username,
-                                @Param("email") String email);
+  // То, что было на уроке это баг в Hibernate, который пока не исправлен
+  // Временное решение - указать аннотацию @Param для всех параметров
+  // https://github.com/spring-projects/spring-data-jpa/issues/2472
+  @Query("select u " +
+          " from User u " +
+          "where (u.username like concat('%', :username, '%') or :username is null) and " +
+          "      (u.email like concat('%', :email, '%') or :email is null)")
+  List<User> findUserByFilter(@Param("username") String username,
+                              @Param("email") String email);
 
-    Optional<User> findUserByUsername(@Param("username") String username);
+  @Query("select distinct u " +
+          " from User u " +
+          " left join fetch u.roles " +
+          "where u.username = :username")
+  Optional<User> findUserByUsername(@Param("username") String username);
 
 }
 

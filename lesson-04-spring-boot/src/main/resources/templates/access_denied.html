@@ -3,8 +3,7 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <!-- рагмент в fragments, который имеет название блока = head -->
-<head th:replace="fragments/head.html :: head">
-</head>
+<head th:replace="fragments/head.html :: head"></head>
 
 <body>
 
@@ -27,7 +26,7 @@
 
 <div class="container">
     <div class="row py-2">
-        <p th:text="${message}">Error message</p>
+        <p>Access denied</p>
     </div>
 </div>
 

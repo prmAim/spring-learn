@@ -1,10 +1,14 @@
 package ru.geekbrains.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.geekbrains.persist.Role;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Разделение уровней сервиса [валидация front] и уровня сущности DB из-за принципа единства отвественности
@@ -27,14 +31,17 @@ public class UserDto {
     @JsonIgnore
     private String matchingPassword;
 
+    private Set<Role> roles;
+
     public UserDto() {
     }
 
-    public UserDto(Long id, String username, String email, String password) {
+    public UserDto(Long id, String username, String email, String password, Set<Role> roles) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.roles = roles;
     }
 
     public Long getId() {
@@ -75,5 +82,13 @@ public class UserDto {
 
     public void setMatchingPassword(String matchingPassword) {
         this.matchingPassword = matchingPassword;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
     }
 }
