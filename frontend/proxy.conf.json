@@ -1,0 +1,8 @@
+{
+  "_comment": "if http://localhost:8081/mvc-app/rest/ to proxy URL into backend from frontend",
+  "/rest/*": {
+    "target": "http://localhost:8081/mvc-app",
+    "secure": false,
+    "logLevel": "debug"
+  }
+}
