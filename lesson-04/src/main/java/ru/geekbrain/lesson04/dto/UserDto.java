@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Разделение уровней сервиса [валидация front] и уровня сущности DB из-за принципа единства отвественности
@@ -27,14 +29,17 @@ public class UserDto {
     @JsonIgnore
     private String matchingPassword;
 
+    private Set<RoleDto> rolesDto;
+
     public UserDto() {
     }
 
-    public UserDto(Long id, String username, String email, String password) {
+    public UserDto(Long id, String username, String email, String password, Set<RoleDto> rolesDto) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
+        this.rolesDto = rolesDto;
     }
 
     public Long getId() {
@@ -75,5 +80,13 @@ public class UserDto {
 
     public void setMatchingPassword(String matchingPassword) {
         this.matchingPassword = matchingPassword;
+    }
+
+    public Set<RoleDto> getRolesDto() {
+        return rolesDto;
+    }
+
+    public void setRolesDto(Set<RoleDto> rolesDto) {
+        this.rolesDto = rolesDto;
     }
 }

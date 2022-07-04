@@ -22,6 +22,10 @@ public interface UserRepository extends JpaRepository<User, Long>, JpaSpecificat
     List<User> findUserByFilter(@Param("username") String username,
                                 @Param("email") String email);
 
+    @Query("select distinct u " +
+            " from User u " +
+            " left join fetch u.roles " +
+            "where u.username = :username")
     Optional<User> findUserByUsername(@Param("username") String username);
 
 }

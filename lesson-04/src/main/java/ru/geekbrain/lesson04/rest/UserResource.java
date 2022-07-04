@@ -3,6 +3,7 @@ package ru.geekbrain.lesson04.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrain.lesson04.dto.UserDto;
 import ru.geekbrain.lesson04.exception.NotFoundException;
@@ -22,6 +23,7 @@ public class UserResource {
         this.userService = userService;
     }
 
+    @Secured({"ROLE_SUPERADMIN", "ROLE_ADMIN"})
     @GetMapping("/all")
     private Page<UserDto> findAll(@RequestParam Optional<String> usernameFilter,
                                   @RequestParam Optional<String> emailFilter,
@@ -47,12 +49,14 @@ public class UserResource {
                 sortFieldValue);
     }
 
+    @Secured({"ROLE_SUPERADMIN", "ROLE_ADMIN"})
     @GetMapping("/{id}/id")
     public UserDto findById(@PathVariable long id) {
         return userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found"));
     }
 
+    @Secured("ROLE_SUPERADMIN")
     @PostMapping
     public UserDto create(@RequestBody UserDto user) {
         if (user.getId() != null) {
@@ -61,6 +65,7 @@ public class UserResource {
         return userService.save(user);
     }
 
+    @Secured("ROLE_SUPERADMIN")
     @PutMapping
     public UserDto update(@RequestBody UserDto user) {
         if (user.getId() == null) {

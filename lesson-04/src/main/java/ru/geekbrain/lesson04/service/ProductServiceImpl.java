@@ -42,12 +42,12 @@ public class ProductServiceImpl implements ProductService {
     // PageRequest.of(page, size, Sort.by("id"))) = реализация пагинации page = номер страницы, size = объем страницы
     // Sort.by - сортировка
     return productRepository.findAll(spec, PageRequest.of(page, size, Sort.by(sortCol)))
-            .map(ProductServiceImpl::productToDto);
+            .map(product -> productToDto(product));
   }
 
   @Override
   public Optional<ProductDto> findById(long id) {
-    return productRepository.findById(id).map(ProductServiceImpl::productToDto);
+    return productRepository.findById(id).map(product -> productToDto(product));
   }
 
   @Override
