@@ -2,6 +2,8 @@ package ru.geekbrain.lesson04.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -91,6 +93,8 @@ public class ProductController {
    * Удаление продукта
    * Уровень контроллера. Обрабатываем метод DELETE URL  .../product/{id}
    */
+  // Если пользователь авторизован, то доступен данный метод
+  @PreAuthorize("isAuthenticated()")
   @DeleteMapping("/{id}")
   public String remove(@PathVariable("id") long id, Model model) {
     productService.deleteById(id);
@@ -116,6 +120,8 @@ public class ProductController {
    * @Valid - объект валидации. BindingResult binding - проверка. Валидация на заполнение полей.
    * @ModelAttribute("product") - так как мы указываем класс ProductDto, а нам нужно преобразовать его в product
    */
+  // Если пользователь авторизован, то доступен данный метод
+  @PreAuthorize("isAuthenticated()")
   @PostMapping
   public String save(@Valid @ModelAttribute("product") ProductDto product, BindingResult binding) {
     if (binding.hasErrors()) {     // если есть ошибки, то остаемся на форме product_form
@@ -128,8 +134,6 @@ public class ProductController {
 
   /**
    * Если в процесе работы контроллера возникнет исключение NotFoundException, то будет перехват
-   *
-   * @return
    */
   @ResponseStatus(HttpStatus.NOT_FOUND)   // Ошибка 404
   @ExceptionHandler

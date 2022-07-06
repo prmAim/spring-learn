@@ -1,0 +1,25 @@
+<!doctype html>
+<!-- Добавить: xmlns:th="http://www.thymeleaf.org" -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!-- рагмент в fragments, который имеет название блока = head -->
+<head th:replace="fragments/head.html :: head">
+</head>
+
+<body>
+<!-- рагмент в fragments, который имеет название блока = navigation -->
+<nav th:replace="fragments/head.html :: navigation">
+</nav>
+
+<div class="container">
+    <div class="row py-2">
+        <p>Welcome the main page!</p>
+    </div>
+</div>
+
+<!-- рагмент в fragments, который имеет название блока = scripts -->
+<th:block th:replace="fragments/footer.html :: scripts">
+</th:block>
+
+</body>
+</html>

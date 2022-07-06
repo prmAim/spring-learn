@@ -2,12 +2,14 @@ package ru.geekbrain.lesson04.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrain.lesson04.dto.UserDto;
 import ru.geekbrain.lesson04.exception.NotFoundException;
+import ru.geekbrain.lesson04.service.RoleService;
 import ru.geekbrain.lesson04.service.UserService;
 
 
@@ -19,10 +21,12 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
+    private final RoleService roleService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -57,6 +61,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public String form(@PathVariable long id, Model model) {
+        model.addAttribute("rolesDto", roleService.findAll());
         model.addAttribute("user", userService.findById(id)
                 .orElseThrow(() -> new NotFoundException("User not found")));
         // Уровень View. Указываем какой шаблон используем: /resources/templates/product_form.html
@@ -65,16 +70,20 @@ public class UserController {
 
     @GetMapping("/new")
     public String form(Model model) {
+        model.addAttribute("rolesDto", roleService.findAll());
         model.addAttribute("user", new UserDto());
         return "user_form";
     }
 
+    @Secured("ROLE_SUPERADMIN")
     @PostMapping
-    public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding) {
+    public String save(@Valid @ModelAttribute("user") UserDto user, BindingResult binding, Model model) {
         if (binding.hasErrors()) {
+            model.addAttribute("rolesDto", roleService.findAll());
             return "user_form";
         }
         if (!user.getPassword().equals(user.getMatchingPassword())) {   // Если поле пароль и второй пароль не одинакова, то создаем ошибку
+            model.addAttribute("rolesDto", roleService.findAll());
             // Выдаем сообщение "Password not match"
             binding.rejectValue("password", "", "Password not match");
             return "user_form";
@@ -87,6 +96,7 @@ public class UserController {
      * Удаление продукта
      * Уровень контроллера. Обрабатываем метод DELETE URL  .../product/{id}
      */
+    @Secured("ROLE_SUPERADMIN")
     @DeleteMapping("/{id}")
     public String delete(@PathVariable long id) {
         userService.deleteById(id);

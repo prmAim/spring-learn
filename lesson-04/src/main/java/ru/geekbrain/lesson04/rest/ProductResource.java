@@ -3,6 +3,8 @@ package ru.geekbrain.lesson04.rest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.geekbrain.lesson04.dto.ProductDto;
 import ru.geekbrain.lesson04.exception.NotFoundException;
@@ -30,6 +32,7 @@ public class ProductResource {
   //  Если это контроллер @Controller + @ResponseBody + @GetMapping, то на выходе на выходе не будет искать модель, а отправит как есть
   //  Eсли это контроллер @Controller + @GetMapping, то на выходе мы ищем название модели представления
   //  Если это контроллер @RestController + @GetMapping, то не требуется @ResponseBody
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/all")
   public Page<ProductDto> findAll(
           @RequestParam Optional<BigDecimal> minCost,
@@ -49,6 +52,7 @@ public class ProductResource {
             sortColValue);
   }
 
+  @PreAuthorize("isAuthenticated()")
   @GetMapping("/{id}/id")
   public ProductDto form(@PathVariable("id") long id) {
     return productService.findById(id)
@@ -56,6 +60,7 @@ public class ProductResource {
   }
 
   // @RequestBody = получение объекта через тело запроса
+  @Secured({"ROLE_SUPERADMIN", "ROLE_ADMIN", "ROLE_MANAGER"})
   @PostMapping
   public ProductDto create(@RequestBody ProductDto product) {
     if (product.getId() != null){
@@ -65,6 +70,7 @@ public class ProductResource {
   }
 
   // @RequestBody = получение объекта через тело запроса
+  @Secured({"ROLE_SUPERADMIN", "ROLE_ADMIN", "ROLE_MANAGER"})
   @PutMapping
   public ProductDto update(@RequestBody ProductDto product) {
     if (product.getId() == null){
@@ -73,6 +79,7 @@ public class ProductResource {
     return productService.save(product);
   }
 
+  @Secured({"ROLE_SUPERADMIN", "ROLE_ADMIN", "ROLE_MANAGER"})
   @DeleteMapping("/{id}")
   public int remove(@PathVariable("id") long id) {
     productService.findById(id)

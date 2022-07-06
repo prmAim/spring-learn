@@ -8,7 +8,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.geekbrain.lesson04.persist.UserRepository;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
@@ -20,15 +20,20 @@ public class UserDetailServiceImpl implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findUserByUsername(username)
-                // new User из пакета org.springframework.security.core.userdetails.User;
-                .map(user -> new User(
-                        user.getUsername(),
-                        user.getPassword(),
-                        Collections.singletonList(new SimpleGrantedAuthority("ADMIN"))  // ADMIN - тут роль (без префикса ROLE_)
-                ))
-                .orElseThrow(() -> new UsernameNotFoundException("Use '" + username + "' not found"));
-    }
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    return userRepository.findUserByUsername(username)
+            // new User из пакета org.springframework.security.core.userdetails.User;
+            .map(user -> new User(
+                    user.getUsername(),
+                    user.getPassword(),
+                    // Указываем роли
+                    user.getRoles().stream()
+                            .map(role -> new SimpleGrantedAuthority(role.getNamerole()))
+                            .collect(Collectors.toList())
+                    // удобно для проверки ЛОгин/Пароли из Оперативной памяти
+                    // Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"))  // ADMIN - это разрешение (без префикса ROLE_), ROLE_ADMIN - это роль.
+            ))
+            .orElseThrow(() -> new UsernameNotFoundException("Use '" + username + "' not found"));
+  }
 }
