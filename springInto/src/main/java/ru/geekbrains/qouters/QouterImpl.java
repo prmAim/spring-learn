@@ -1,15 +1,17 @@
 package main.java.ru.geekbrains.qouters;
 
+import main.java.ru.geekbrains.annatation.DeprecatedClass;
 import main.java.ru.geekbrains.annatation.InjectRandomInt;
 import main.java.ru.geekbrains.annatation.PostProxy;
 import main.java.ru.geekbrains.annatation.Profiling;
 
 import javax.annotation.PostConstruct;
 
-@Profiling
+@Profiling  // своя аннатация профилирования всех методов класса
+@DeprecatedClass(newImpl = QouterNewImpl.class)
 public class QouterImpl implements Qouter {
 
-    @InjectRandomInt(min = 2, max = 7)
+    @InjectRandomInt(min = 2, max = 7)   // своя аннатация создание random числа
     private int repeat;
     private String message;
 
@@ -29,7 +31,7 @@ public class QouterImpl implements Qouter {
     }
 
     @Override
-    @PostProxy
+    @PostProxy      // своя аннатация phase 3
     public void sayQoute() {
         System.out.println("Phase3 repeat=" + repeat);
         for (int i = 0; i < repeat; i++) {

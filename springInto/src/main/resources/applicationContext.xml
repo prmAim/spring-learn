@@ -5,7 +5,8 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:component-scan base-package="main.java.ru.geekbrains" />
-
+    <!-- для анализа свое аннатации своя аннатация @DeprecatedClass -->
+    <bean class="main.java.ru.geekbrains.annatation.DeprecationHandlerBeanFactoryPostprocessor" />
     <!-- для анализа свое аннатации своя аннатация @PostProxy -->
     <bean class="main.java.ru.geekbrains.annatation.PostProxyInvokerContextListener" />
     <!-- для анализа свое аннатации своя аннатация @Profiling -->

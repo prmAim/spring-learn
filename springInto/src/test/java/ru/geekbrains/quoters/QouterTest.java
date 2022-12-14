@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class QouterTest {
-    static ApplicationContext context;
+    private static ApplicationContext context;
 
     @Before
     public void setUp() throws Exception {
@@ -15,7 +15,7 @@ public class QouterTest {
     }
 
     @Test
-    public void sayQoute() throws InterruptedException {
+    public void sayQouteTest() throws InterruptedException {
             context.getBean("qouter", Qouter.class).sayQoute();
     }
 }
